@@ -4,6 +4,7 @@ window.GAME_CONTENT.events.push({
   id: "cd_dinner",
   title: "Ужин креативных директоров",
   subtitle: "Ресторан «Пэкшот». Меню без цен, счёт — один на всех.",
+  where: "на ужине креативных директоров",
   emoji: "🍷",
   intro: "Длинный стол, меню без цен, двенадцать человек — у каждого по металлу, по студии и по саббатикалу. Говорят о смыслах, слушают только названия агентств. Тебе досталось место с краю, рядом с хлебом: его здесь берут чаще, чем визитки.",
   picks: 8,
@@ -16,19 +17,19 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Мы знакомы. Дважды. В жюри»",
           result: "Он вспомнил. Не тебя — категорию. «А, Film Craft! Там ни одна работа не дотянула». Твоя там тоже была.",
-          energy: -5, cringe: 10, clout: -5, flags: ["honest"]
+          energy: -5, cringe: 5, clout: -5, flags: ["honest"]
         },
         {
           text: "Представиться заново, как в первый раз",
           result: "«Очень приятно, слышал о вас много хорошего». Ты сам ему это рассказывал. В 2019-м. Договорились созвониться, как и тогда.",
-          energy: -10, cringe: 0, clout: 5,
+          energy: -5, cringe: 0, clout: 5,
           contact: { name: "Геннадий", title: "Global ECD", kind: "empty", note: "знакомы третий раз" },
           flags: ["ghosted"]
         },
         {
           text: "Уточнить, он ведь из того сетевого, которое с пчелой",
           result: "Не с пчелой. И не из сетевого. Он его основал. Пауза заняла всё горячее.",
-          energy: -10, cringe: 25, clout: -10
+          energy: -5, cringe: 15, clout: -10
         }
       ]
     },
@@ -40,17 +41,17 @@ window.GAME_CONTENT.events.push({
         {
           text: "Промолчать и очень внимательно резать стейк",
           result: "Молчание было заметно. Стейк — тоже: он оказался рыбой.",
-          energy: -10, cringe: 15, next: "cd_dinner_jury_2"
+          energy: -5, cringe: 10, next: "cd_dinner_jury_2"
         },
         {
           text: "«Это был наш кейс. Кадры — подрядчика»",
           result: "Она кивнула: «Банят не подрядчика. Банят фамилию». Твоя в титрах была восьмой. Хватило.",
-          energy: -5, cringe: 10, clout: -10, flags: ["honest"], next: "cd_dinner_jury_2"
+          energy: -5, cringe: 5, clout: -10, flags: ["honest"], next: "cd_dinner_jury_2"
         },
         {
           text: "«А что, пианино — это плохо?»",
           result: "Она объяснила. Двадцать минут. Ты узнал, что твоё пианино — в трёх кейсах из четырёхсот. Ты засмеялся на всякий случай.",
-          energy: -10, cringe: 5, clout: 5, flags: ["fake_laugh"]
+          energy: -5, cringe: 5, clout: 5, flags: ["fake_laugh"]
         }
       ]
     },
@@ -63,17 +64,17 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Это и есть охват»",
           result: "Стол засмеялся. Потом перестал. Потом один записал фразу — для своего кейса.",
-          cringe: 15, clout: 10
+          cringe: 10, clout: 10
         },
         {
           text: "«Мы вернём металл сами. Как честные»",
           result: "Металл лежит у аккаунта. Аккаунт уволился в прошлую пятницу. Вместе с металлом.",
-          energy: -10, cringe: 5, clout: -5, flags: ["honest"]
+          energy: -5, cringe: 5, clout: -5, flags: ["honest"]
         },
         {
           text: "Долить всем вина и сменить тему",
           result: "Тема сменилась на «кто вообще делал этот кейс». Вино кончилось на твоём бокале.",
-          energy: -10, cringe: 10, clout: 5, flags: ["prosecco"]
+          energy: -5, cringe: 5, clout: 5, flags: ["prosecco"]
         }
       ]
     },
@@ -91,12 +92,12 @@ window.GAME_CONTENT.events.push({
         {
           text: "«А чем студия отличается от агентства?»",
           result: "Он объяснил. Отличие — в договоре нет слова «агентство». Тридцать процентов на медиа — есть.",
-          energy: -10, cringe: 0, clout: 5
+          energy: -5, cringe: 0, clout: 5
         },
         {
           text: "«Я тоже думаю уйти делать своё»",
           result: "«А что именно?» Пауза. Он посмотрел на тебя с узнаванием: год назад на этот вопрос молчал он.",
-          energy: -10, cringe: 15, clout: -5,
+          energy: -5, cringe: 10, clout: -5,
           contact: { name: "Марк", title: "тоже молчал", kind: "real" },
           flags: ["lied"]
         }
@@ -110,19 +111,19 @@ window.GAME_CONTENT.events.push({
         {
           text: "Чокнуться и не смотреть напротив",
           result: "Он улыбнулся тебе. Ты улыбнулся бокалу. Зум в понедельник в 18:40 длился семь минут.",
-          energy: -5, cringe: 10, clout: 5, flags: ["prosecco"]
+          energy: -5, cringe: 5, clout: 5, flags: ["prosecco"]
         },
         {
           text: "Тихо сказать ему: «Обнови резюме»",
           result: "Он не понял. Потом понял. Потом выпил до дна и сказал ей: «Спасибо, что ты у нас есть».",
-          energy: -10, cringe: 5, clout: -5,
+          energy: -5, cringe: 5, clout: -5,
           contact: { name: "Тот, напротив", title: "один из четверых", kind: "empty", note: "освободится в понедельник" },
           flags: ["honest"]
         },
         {
           text: "«А семья — это по ТК или по любви?»",
           result: "Тишина. Алиса рассмеялась первой: «По любви, конечно». Доступы отключают тоже по любви.",
-          energy: -10, cringe: 20, clout: 10, flags: ["complained"]
+          energy: -5, cringe: 10, clout: 10, flags: ["complained"]
         }
       ]
     },
@@ -134,17 +135,17 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Давай. С какого числа?»",
           result: "С понедельника. Договор — «потом». Через три месяца ты станешь бренд-менеджером у его клиента. И будешь его брифовать.",
-          energy: -10, cringe: 0, clout: 5, flags: ["free_work"]
+          energy: -5, cringe: 0, clout: 5, flags: ["free_work"]
         },
         {
           text: "«А ставка — цифрой?»",
           result: "«Ты сейчас про деньги или про рост?» Он посмотрел так, будто ты спросил про вкус. Вкус у него есть. Ставки — нет.",
-          energy: -5, cringe: 15, clout: 5, flags: ["ask_budget"]
+          energy: -5, cringe: 10, clout: 5, flags: ["ask_budget"]
         },
         {
           text: "«Я сам CD. Двенадцать лет»",
           result: "«Отлично, тогда стажировка менторская. Для меня. Бесплатно». Ты согласился — это звучало как комплимент.",
-          energy: -10, cringe: 10, clout: -5, flags: ["lied"]
+          energy: -5, cringe: 5, clout: -5, flags: ["lied"]
         }
       ]
     },
@@ -156,18 +157,18 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Это мой пост»",
           result: "«Да? Ну, значит, мы думаем одинаково». Вечером он репостнул его. С подписью «давно хотел это сформулировать».",
-          energy: 0, cringe: 10, clout: 5, flags: ["honest"]
+          energy: 0, cringe: 5, clout: 5, flags: ["honest"]
         },
         {
           text: "«Сильно. Подпишусь»",
           result: "Подписался. Теперь ты один из тех 9k, кто читает, чтобы поржать. Он это видит по статистике.",
-          energy: -10, cringe: 0, clout: 5,
+          energy: -5, cringe: 0, clout: 5,
           contact: { name: "Тимофей", title: "канал о смыслах", kind: "empty", note: "взаимная подписка" }
         },
         {
           text: "«А сколько у тебя стоит пост?»",
           result: "«Я не продаю рекламу, я формирую повестку». Прайс пришёл через минуту. В повестке — три формата и сторис.",
-          energy: -10, cringe: 15, clout: -5
+          energy: -5, cringe: 10, clout: -5
         }
       ]
     },
@@ -179,19 +180,19 @@ window.GAME_CONTENT.events.push({
         {
           text: "«О чём? Мы не знакомы»",
           result: "Знакомы. Она прислала вилку в пятницу, ты ответил «интересно». Человек через стол читает по губам.",
-          energy: -5, cringe: 15, clout: -5, flags: ["lied"]
+          energy: -5, cringe: 10, clout: -5, flags: ["lied"]
         },
         {
           text: "«Подумал. Давай созвонимся на неделе»",
           result: "Созвон состоялся. В понедельник, с работодателем, тема — «твои планы». Лера прислала вторую вилку. Ниже.",
-          energy: -10, cringe: 5, clout: 5,
+          energy: -5, cringe: 5, clout: 5,
           contact: { name: "Лера", title: "talent partner", kind: "empty", note: "вилка ниже прежней" },
           flags: ["said_davai"]
         },
         {
           text: "Уйти в туалет на всё горячее",
           result: "Вернулся к десерту. Лера уже пересела к твоему работодателю. Обсуждали, кого взять на твоё место.",
-          energy: 5, cringe: 10, clout: -10, flags: ["toilet"]
+          energy: 5, cringe: 5, clout: -10, flags: ["toilet"]
         }
       ]
     },
@@ -203,17 +204,17 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Шекспир был сторителлером. Ты — копирайтер»",
           result: "Тишина. Потом смех — слишком громкий. Даниэль тоже засмеялся. Утром фраза была в его канале. Как его.",
-          energy: -5, cringe: 10, clout: 15, flags: ["honest"]
+          energy: -5, cringe: 5, clout: 15, flags: ["honest"]
         },
         {
           text: "Кивнуть и записать вместе со всеми",
           result: "Записал. В заметку «Фразы для презы». Там уже есть «мы не продаём, мы рассказываем». Трижды.",
-          energy: -10, cringe: -5, clout: 5, flags: ["fake_laugh"]
+          energy: -5, cringe: -5, clout: 5, flags: ["fake_laugh"]
         },
         {
           text: "«А сторителлер — это сколько в месяц?»",
           result: "«Это не про деньги». Через два блюда он спросил, сколько платят тебе. Про деньги оказалось — про тебя.",
-          energy: -10, cringe: 15, clout: -5, flags: ["ask_budget"]
+          energy: -5, cringe: 10, clout: -5, flags: ["ask_budget"]
         }
       ]
     },
@@ -230,12 +231,12 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Я выгорел. Нейросети ни при чём»",
           result: "Тишина. Потом: «Я тоже». Все одиннадцать. Стол был честным одиннадцать секунд — рекорд ужина. Потом вернулись к нейросетям.",
-          energy: -10, cringe: 15, clout: -5, flags: ["burnout", "honest"]
+          energy: -5, cringe: 10, clout: -5, flags: ["burnout", "honest"]
         },
         {
           text: "Сделать вид, что звонит телефон",
           result: "На экране — «КЛИЕНТ (не брать)». Клиент сидит через два стула и видит экран. И видит, что ты не берёшь.",
-          energy: -10, cringe: 20, clout: -5, flags: ["phone_hide"]
+          energy: -5, cringe: 10, clout: -5, flags: ["phone_hide"]
         }
       ]
     },
@@ -253,12 +254,12 @@ window.GAME_CONTENT.events.push({
         {
           text: "Запитчить ему студию прямо через стойку",
           result: "Он выслушал, вытер стойку и сказал: «Скиньте моему ассистенту». Ассистента у него пока нет. Это был день первый.",
-          energy: -10, cringe: 10, clout: 5, flags: ["pitched"]
+          energy: -5, cringe: 5, clout: 5, flags: ["pitched"]
         },
         {
           text: "«Двойной. И чаевые — наличными»",
           result: "Ты дал чаевые новому CCO. Он взял. Сказал, что это первый честный гонорар в индустрии за год.",
-          energy: -10, cringe: 25, clout: 10, flags: ["prosecco"]
+          energy: -5, cringe: 15, clout: 10, flags: ["prosecco"]
         }
       ]
     },
@@ -271,18 +272,18 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Тон — твой. Я его тебе ставил»",
           result: "«Вот поэтому я и не уверена». Она улыбнулась. Правки пришли в десять вечера, голосовым, на шесть минут.",
-          energy: -10, cringe: 10, clout: -5, flags: ["honest"]
+          energy: -5, cringe: 5, clout: -5, flags: ["honest"]
         },
         {
           text: "«Конечно, докрутим. К утру»",
           result: "К утру докрутили. Она переслала бывшим коллегам: «Смотрите, кого я вырастила». Ты — в титрах восьмым.",
-          energy: -15, cringe: 0, clout: 5,
+          energy: -10, cringe: 0, clout: 5,
           contact: { name: "Кира", title: "клиент, бывший джун", kind: "empty", note: "«правки в понедельник» — пришли в воскресенье" }
         },
         {
           text: "Представить её столу: «Моя ученица… э-э»",
           result: "Стол оценил. Она тоже: «Меня зовут Кира. А это мой первый начальник: ужасный, но полезный». Стол оценил сильнее.",
-          energy: -5, cringe: 20, flags: ["forgot_name"]
+          energy: -5, cringe: 10, flags: ["forgot_name"]
         }
       ]
     },
@@ -295,17 +296,17 @@ window.GAME_CONTENT.events.push({
         {
           text: "Нарисовать на салфетке",
           result: "Ты нарисовал. Он сфотографировал. Через неделю это было на билборде с подписью «сделано за ужином». Твоей — нет.",
-          energy: -10, cringe: 5, clout: 5, flags: ["free_work"]
+          energy: -5, cringe: 5, clout: 5, flags: ["free_work"]
         },
         {
           text: "«Поиграть шрифтами?»",
           result: "Он вздрогнул так, будто ты сказал «сделай логотип больше». Потом попросил сделать логотип больше.",
-          energy: -5, cringe: 15, clout: 5
+          energy: -5, cringe: 10, clout: 5
         },
         {
           text: "«Пришли бриф. И бюджет. В будни»",
           result: "Пришёл бриф. Голосовым, из такси, на девять минут. Бюджет — «обсудим, когда увидим». Увидели — на салфетке.",
-          energy: -10, cringe: 5, clout: 10, flags: ["ask_budget"]
+          energy: -5, cringe: 5, clout: 10, flags: ["ask_budget"]
         }
       ]
     },
@@ -318,17 +319,17 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Сделаем. За полтора, выглядеть будет на десять»",
           result: "Сняли. Выглядело на десять. Жюри открыло ссылку: кампании не нашли. Шорт сняли, твоё имя — в титрах. Третьим.",
-          energy: -10, cringe: 5, clout: 10, flags: ["lied"]
+          energy: -5, cringe: 5, clout: 10, flags: ["lied"]
         },
         {
           text: "«А кампания вообще выходила?»",
           result: "«Три дня в одном регионе. Это считается». Пауза. «Считалось». Он долил тебе вина и сменил тему на тебя.",
-          energy: -5, cringe: 10, clout: -5, flags: ["honest"]
+          energy: -5, cringe: 5, clout: -5, flags: ["honest"]
         },
         {
           text: "«Без ИИ-кадров — отдельный прайс»",
           result: "Он кивнул: «ИИ — только подложка, никто не заметит». Заметили. За сорок минут до церемонии. По титрам отвечает продакшн.",
-          energy: -10, cringe: 15, clout: 5, flags: ["ai_talk"]
+          energy: -5, cringe: 10, clout: 5, flags: ["ai_talk"]
         }
       ]
     },
@@ -341,17 +342,17 @@ window.GAME_CONTENT.events.push({
         {
           text: "Назвать цену. Настоящую",
           result: "«За эти деньги мы снимем ролик». Сняли. Охват — у твоего рилса с котом. Инна попросила «зарепостить по-дружески».",
-          energy: -5, cringe: 10, clout: 5, flags: ["ask_budget"]
+          energy: -5, cringe: 5, clout: 5, flags: ["ask_budget"]
         },
         {
           text: "«Для серьёзного бренда — за экспозицию»",
           result: "Она записала. Через неделю пришёл бриф на двенадцать рилсов и «манифест бренда» в телеграм. Экспозиция оказалась ночной сменой.",
-          energy: -15, cringe: 5, clout: 5, flags: ["free_work"]
+          energy: -10, cringe: 5, clout: 5, flags: ["free_work"]
         },
         {
           text: "«Рилсы — не креатив. А что креатив?»",
           result: "«Смыслы». Пауза. «И ролик для фестиваля». Она показала кейс-видео. Там был твой рилс. Нарезанный, без подписи.",
-          energy: -10, cringe: 15, clout: -5, flags: ["complained"]
+          energy: -5, cringe: 10, clout: -5, flags: ["complained"]
         }
       ]
     },
@@ -364,18 +365,18 @@ window.GAME_CONTENT.events.push({
         {
           text: "Накрыть папку рукой: «Я закрою»",
           result: "Ты закрыл. Стол выпил за тебя. В понедельник трое написали «давай на связи». Один из них — хедхантер.",
-          energy: -15, cringe: 0, clout: 15,
+          energy: -10, cringe: 0, clout: 15,
           contact: { name: "Весь стол", title: "двенадцать CD", kind: "empty", note: "«скинемся переводом»" }
         },
         {
           text: "Присоединиться к тосту и смотреть в бокал",
           result: "Тост длился, пока папку не взял тот, кто её заказал: CEO спонсора. Ты чокнулся с ним последним и ушёл первым.",
-          energy: -5, cringe: 15, clout: -5, flags: ["prosecco"]
+          energy: -5, cringe: 10, clout: -5, flags: ["prosecco"]
         },
         {
           text: "Тихо официанту: «Разделите на всех»",
           result: "Он кивнул. Первый человек за вечер, который сделал ровно то, о чём попросили. Стол выяснял, кто это предложил, до закрытия.",
-          energy: -10, cringe: 10, clout: -5, flags: ["honest"]
+          energy: -5, cringe: 5, clout: -5, flags: ["honest"]
         }
       ]
     }
