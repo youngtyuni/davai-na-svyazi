@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ДАВАЙ НА СВЯЗИ — симулятор нетворкинга</title>
+  <meta name="description" content="Симулятор нетворкинга в креативных индустриях. 3 минуты. Ни одного полезного контакта.">
+  <meta name="theme-color" content="#0B0B0B">
+
+  <meta property="og:type" content="website">
+  <!-- замени USERNAME на свой логин GitHub (или на свой домен) -->
+  <meta property="og:url" content="https://USERNAME.github.io/davai-na-svyazi/">
+  <meta property="og:title" content="ДАВАЙ НА СВЯЗИ — симулятор нетворкинга">
+  <meta property="og:description" content="Симулятор нетворкинга в креативных индустриях. 3 минуты. Ни одного полезного контакта.">
+  <meta property="og:image" content="assets/og.png">
+  <meta property="og:locale" content="ru_RU">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ДАВАЙ НА СВЯЗИ — симулятор нетворкинга">
+  <meta name="twitter:description" content="Симулятор нетворкинга в креативных индустриях. 3 минуты. Ни одного полезного контакта.">
+  <meta name="twitter:image" content="assets/og.png">
+
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800;900&family=Inter+Tight:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main id="app" aria-live="polite"></main>
+
+  <!-- правила игры -->
+  <script src="js/data.js"></script>
+  <!-- контент: каждый ивент — отдельный файл по docs/CONTENT_SCHEMA.md -->
+  <script src="content/events/_sample.js"></script>
+  <!-- движок и интерфейс -->
+  <script src="js/engine.js"></script>
+  <script src="js/share.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>
