@@ -7,7 +7,7 @@
 Люди в бейджах говорят тебе вещи. Ты отвечаешь. Батарейка садится, кринж растёт, клаут колеблется.
 В конце — архетип, приговор в одну строку и карточка, которую стыдно и приятно переслать коллегам.
 
-👉 **Играть:** https://<твой-логин>.github.io/davai-na-svyazi/
+👉 **Играть:** https://youngtyuni.github.io/davai-na-svyazi/
 
 ![скриншот](assets/og.png)
 
@@ -24,7 +24,7 @@
 Никакой сборки. Открой `index.html` в браузере или задеплой на GitHub Pages:
 
 ```bash
-git clone https://github.com/<твой-логин>/davai-na-svyazi.git
+git clone https://github.com/youngtyuni/davai-na-svyazi.git
 cd davai-na-svyazi
 python3 -m http.server 8080
 ```
