@@ -29,7 +29,7 @@ cd davai-na-svyazi
 python3 -m http.server 8080
 ```
 
-Для GitHub Pages: Settings → Pages → Source: **GitHub Actions**. Workflow уже в репозитории, деплой при пуше в `main`.
+Для GitHub Pages: Settings → Pages → Source: **Deploy from a branch** → Branch: `main`, folder `/ (root)` → Save. Через минуту игра доступна по ссылке выше.
 
 ## Проверки
 
