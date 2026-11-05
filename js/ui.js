@@ -137,6 +137,18 @@
     return "Собрано финалов: " + progress.endings.length + "/" + DATA.endings.length;
   }
 
+  // Стикеры и бейджи для стартового экрана — случайный на каждый показ
+  const STICKERS = ["«скинь презу»", "«созвонимся»", "«за опыт»", "«мы семья»", "«давай ВП»", "«это пойдёт в кейс»", "«бюджета нет»", "«а что хотел сказать автор»", "«ты же дизайнер»", "«в силе?»"];
+  const HERO_NPCS = [
+    { name: "никто", title: "ex-всё, founder, в поиске себя", emoji: "🫥" },
+    { name: "Кирилл", title: "Founder, visionary, экосистема", emoji: "🧢" },
+    { name: "Полина", title: "Куратор, «работаю с памятью»", emoji: "🥂" },
+    { name: "Марк", title: "Промоутер. Гонорары на неделе", emoji: "🎧" },
+    { name: "Лёша", title: "Вышел из найма. Три месяца", emoji: "✈️" },
+    { name: "Света", title: "Комьюнити-билдер, «знаю всех»", emoji: "🤝" }
+  ];
+  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
   function renderStart() {
     const progress = loadProgress();
     const s = el("div", {}, [
@@ -144,6 +156,10 @@
         el("h1", { class: "hero__title", text: "ДАВАЙ НА СВЯЗИ" }),
         el("p", { class: "hero__sub", text: "симулятор нетворкинга в креативных индустриях" }),
         el("p", { class: "hero__desc", text: "Одна вечеринка. Восемь человек с длинными титулами. Три шкалы, которые ты не удержишь." })
+      ]),
+      el("div", { class: "hero__badge" }, [
+        el("span", { class: "sticker sticker--lime", text: pick(STICKERS) }),
+        badge(pick(HERO_NPCS), false)
       ]),
       button("Пойти на ивент", () => renderRole(), "btn--primary btn--big"),
       progress.runs > 0 ? el("p", { class: "muted small center", text: collectedLine(progress) }) : null,

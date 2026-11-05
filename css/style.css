@@ -132,6 +132,32 @@ p { margin: 0 0 12px; }
 
 .hero__desc { font-size: 18px; color: var(--muted); }
 
+/* бейдж-«никто» на старте: меньше, наклонён в другую сторону, со стикером */
+.hero__badge { position: relative; margin: 0 auto 28px; max-width: 300px; }
+.hero__badge .badge-wrap { margin: 0 8px 0; }
+.hero__badge .badge { transform: rotate(2deg); animation-name: badge-in-hero; box-shadow: 6px 6px 0 var(--blue); }
+.hero__badge .badge__name { font-size: 26px; }
+@keyframes badge-in-hero {
+  from { opacity: 0; transform: rotate(7deg) translateY(-30px); }
+  to { opacity: 1; transform: rotate(2deg) translateY(0); }
+}
+.sticker {
+  position: absolute;
+  z-index: 2;
+  top: 26px;
+  right: -6px;
+  padding: 6px 10px;
+  font-family: var(--head);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: .02em;
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  transform: rotate(-8deg);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.sticker--lime { background: var(--lime); }
+
 .fine { text-align: center; font-size: 13px; color: var(--muted); margin-top: auto; padding-top: 24px; }
 
 /* ---------- Карточки выбора ---------- */
