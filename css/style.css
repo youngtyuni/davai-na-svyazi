@@ -18,6 +18,9 @@
 
 * { box-sizing: border-box; }
 
+/* длинные «слова» без пробелов (final_FINAL_правки, ссылки) не должны вылезать за 320px */
+.btn, .card, .situation, .chosen, .outcome__text, .badge__title, .contact, .ach__text { overflow-wrap: anywhere; }
+
 html { -webkit-text-size-adjust: 100%; }
 
 body {

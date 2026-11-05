@@ -241,12 +241,13 @@
     ]);
   }
 
-  function hud(game, values) {
+  // n — номер показываемой встречи (на экране исхода index уже сдвинут, поэтому передаём явно)
+  function hud(game, values, n) {
     return el("header", { class: "hud" }, [
       statsPanel(values),
       el("div", { class: "hud__row" }, [
-        el("span", { class: "counter", text: "встреча " + Math.min(game.index + 1, game.queue.length) + "/" + game.queue.length }),
-        button("Уйти по-английски", () => { E.leaveEnglish(game); renderEnding(); }, "btn--tiny")
+        el("span", { class: "counter", text: "встреча " + Math.min(n, game.queue.length) + "/" + game.queue.length }),
+        game.done ? null : button("Уйти по-английски", () => { E.leaveEnglish(game); renderEnding(); }, "btn--tiny")
       ])
     ]);
   }
@@ -261,7 +262,7 @@
       renderOutcome(enc);
     }, "btn--option"));
     const s = el("div", {}, [
-      hud(g, g),
+      hud(g, g, g.index + 1),
       badge(enc.npc, false),
       el("p", { class: "situation", text: enc.text }),
       el("div", { class: "options", role: "group", "aria-label": "Варианты ответа" }, options)
@@ -285,7 +286,7 @@
       deltaNodes.push(el("span", { class: good ? "delta delta--good" : "delta delta--bad", text: DATA.stats[k].emoji + " " + fmtDelta(d) }));
     });
 
-    const panel = hud(g, o.before);
+    const panel = hud(g, o.before, g.log.length);
     const s = el("div", {}, [
       panel,
       badge(enc.npc, cringeUp),

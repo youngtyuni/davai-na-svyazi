@@ -96,7 +96,7 @@
 
       // стикер-уголок
       ctx.save();
-      ctx.translate(W - 190, 400); // справа от эмодзи, не задевает заголовок
+      ctx.translate(W - 190, 380); // справа от эмодзи, не задевает заголовок
       ctx.rotate(0.25);
       ctx.fillStyle = C.pink;
       ctx.fillRect(-80, -40, 160, 80);
@@ -120,12 +120,12 @@
 
       // эмодзи и название финала — огромным
       ctx.font = "190px " + BODY;
-      ctx.fillText(ending.emoji, W / 2, 470);
+      ctx.fillText(ending.emoji, W / 2, 440);
 
       ctx.fillStyle = C.paper;
       ctx.font = "900 78px " + HEAD;
       const titleLines = wrapText(ctx, ending.title.toUpperCase(), 900);
-      let y = drawLines(ctx, titleLines, W / 2, 580, 88, 2);
+      let y = drawLines(ctx, titleLines, W / 2, 560, 86, 2);
 
       // приговор
       ctx.fillStyle = C.lime;
@@ -137,14 +137,14 @@
       const chain = E ? E.runEmoji(state) : "";
       if (chain) {
         ctx.font = "60px " + BODY;
-        y = drawLines(ctx, chunk(chain, 12), W / 2, y + 56, 72, 2) - 10;
+        y = drawLines(ctx, chunk(chain, 12), W / 2, y + 48, 72, 2) - 10;
       }
 
       // шкалы
-      y += 36;
-      y = drawBar(ctx, y, data.stats.energy.emoji, data.stats.energy.label, state.energy, C.lime) + 50;
-      y = drawBar(ctx, y, data.stats.cringe.emoji, data.stats.cringe.label, state.cringe, C.pink) + 50;
-      y = drawBar(ctx, y, data.stats.clout.emoji, data.stats.clout.label, state.clout, C.blue) + 58;
+      y += 30;
+      y = drawBar(ctx, y, data.stats.energy.emoji, data.stats.energy.label, state.energy, C.lime) + 44;
+      y = drawBar(ctx, y, data.stats.cringe.emoji, data.stats.cringe.label, state.cringe, C.pink) + 44;
+      y = drawBar(ctx, y, data.stats.clout.emoji, data.stats.clout.label, state.clout, C.blue) + 52;
 
       // контакты
       const real = state.contacts.filter(c => c.kind === "real").length;
@@ -152,10 +152,23 @@
       ctx.fillStyle = C.paper;
       ctx.font = "700 34px " + HEAD;
       ctx.fillText(data.contactsLine(state.contacts.length, real), W / 2, y);
-      y += 60;
+      y += 56;
 
-      // ачивки (до 3, по строке)
-      const ach = (opts.achievements || []).slice(0, 3);
+      // вызов + URL — не ниже безопасной зоны; limit — верх этого блока
+      const challenge = E ? E.challengeLine(state) : "А ты кто?";
+      ctx.font = "800 42px " + HEAD;
+      const chLines = wrapText(ctx, challenge, 900);
+      const needed = chLines.length * 52 + 70;
+      const limit = SAFE_BOTTOM - needed;
+
+      // роль — измеряем заранее, чтобы знать, сколько места останется под ачивки
+      ctx.font = "500 28px " + BODY;
+      const roleLines = wrapText(ctx, (role && role.card) || "", 880);
+      const roleH = roleLines.length ? 12 + roleLines.length * 34 : 0;
+
+      // ачивки (до 3, по строке): показываем столько, сколько влезает до вызова, минимум одну
+      let ach = (opts.achievements || []).slice(0, 3);
+      while (ach.length > 1 && y + ach.length * 48 + roleH + 40 > limit) ach = ach.slice(0, -1);
       ctx.textAlign = "left";
       ach.forEach(a => {
         ctx.font = "32px " + BODY;
@@ -174,15 +187,12 @@
       ctx.textAlign = "center";
       ctx.fillStyle = C.grey;
       ctx.font = "500 28px " + BODY;
-      y = drawLines(ctx, wrapText(ctx, (role && role.card) || "", 880), W / 2, y + 20, 34, 2);
+      y = drawLines(ctx, roleLines, W / 2, y + 12, 34, 2);
 
-      // вызов + URL (не ниже безопасной зоны)
+      // вызов: прижат к безопасной зоне, но никогда не наезжает на контент выше
       ctx.fillStyle = C.lime;
       ctx.font = "800 42px " + HEAD;
-      const challenge = E ? E.challengeLine(state) : "А ты кто?";
-      const chLines = wrapText(ctx, challenge, 900);
-      const needed = chLines.length * 52 + 70;
-      y = Math.min(y + 50, SAFE_BOTTOM - needed);
+      y = Math.max(Math.min(y + 40, limit), y + 24);
       y = drawLines(ctx, chLines, W / 2, y, 52, 2);
       ctx.fillStyle = C.paper;
       ctx.font = "700 30px " + HEAD;

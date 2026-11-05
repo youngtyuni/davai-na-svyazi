@@ -173,7 +173,9 @@
 
     if (opt.next) {
       const nextEnc = (state.event.encounters || []).find(e => e.id === opt.next);
-      if (nextEnc) {
+      // уже показанную встречу (в т.ч. саму себя) второй раз не ставим — иначе цикл
+      const shown = nextEnc && state.queue.slice(0, state.index + 1).includes(nextEnc);
+      if (nextEnc && !shown) {
         // убираем дубликат дальше по очереди и ставим цепочечную встречу первой
         const rest = state.queue.slice(state.index + 1).filter(e => e !== nextEnc);
         state.queue = state.queue.slice(0, state.index + 1).concat([nextEnc], rest);
