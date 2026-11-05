@@ -46,7 +46,7 @@ fs.mkdirSync(SHOTS, { recursive: true });
 
   await page.waitForSelector(".screen--intro");
   await shot("intro");
-  await page.getByRole("button", { name: "Зайти" }).click();
+  await page.getByRole("button", { name: "Сдать куртку и зайти" }).click();
 
   // проходим все встречи: вариант по кругу, потом «Дальше»
   let step = 0;
@@ -56,6 +56,11 @@ fs.mkdirSync(SHOTS, { recursive: true });
     if (name === "ending") break;
     if (name !== "encounter") throw new Error("Неожиданный экран: " + name);
     if (!shotEncounter) { await shot("encounter"); shotEncounter = true; }
+    // HUD: время «HH:MM» и счётчик «N из M»
+    const clock = await page.locator(".hud .clock").textContent();
+    if (!/^\d{2}:\d{2}$/.test(clock)) errors.push("HUD: нет времени, есть «" + clock + "»");
+    const counter = await page.locator(".hud .counter").textContent();
+    if (!/^\d+ из \d+$/.test(counter)) errors.push("HUD: счётчик «" + counter + "»");
     const options = page.locator(".btn--option");
     const n = await options.count();
     if (n < 2 || n > 4) errors.push(`вариантов ${n} на шаге ${step}`);

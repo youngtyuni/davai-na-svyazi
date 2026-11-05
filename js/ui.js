@@ -97,7 +97,10 @@
     const s = DATA.stats[key];
     const row = el("div", { class: "stat stat--" + key + (key === "energy" && value < 20 ? " stat--low" : ""),
       role: "meter", "aria-label": s.label, "aria-valuemin": "0", "aria-valuemax": "100", "aria-valuenow": String(value) }, [
-      el("span", { class: "stat__emoji", "aria-hidden": "true", text: s.emoji }),
+      el("span", { class: "stat__key" }, [
+        el("span", { class: "stat__emoji", "aria-hidden": "true", text: s.emoji }),
+        el("span", { class: "stat__label", "aria-hidden": "true", text: s.label.toLowerCase() })
+      ]),
       el("div", { class: "stat__bar" }, [el("div", { class: "stat__fill", style: { width: value + "%" } })]),
       el("span", { class: "stat__num", text: String(value) })
     ]);
@@ -137,6 +140,10 @@
     return "Собрано финалов: " + progress.endings.length + "/" + DATA.endings.length;
   }
 
+  function allEndingsLabel(progress) {
+    return "Все финалы (" + progress.endings.length + " из " + DATA.endings.length + ")";
+  }
+
   // Стикеры и бейджи для стартового экрана — случайный на каждый показ
   const STICKERS = ["«скинь презу»", "«созвонимся»", "«за опыт»", "«мы семья»", "«давай ВП»", "«это пойдёт в кейс»", "«бюджета нет»", "«а что хотел сказать автор»", "«ты же дизайнер»", "«в силе?»"];
   const HERO_NPCS = [
@@ -163,7 +170,7 @@
       ]),
       button("Пойти на ивент", () => renderRole(), "btn--primary btn--big"),
       progress.runs > 0 ? el("p", { class: "muted small center", text: collectedLine(progress) }) : null,
-      progress.runs > 0 ? button("Все финалы", () => renderEndings(renderStart), "btn--ghost") : null,
+      progress.runs > 0 ? button(allEndingsLabel(progress), () => renderEndings(renderStart), "btn--ghost") : null,
       el("p", { class: "fine", text: "3 минуты. Ни одного полезного контакта." })
     ]);
     show(s, "start");
@@ -177,7 +184,7 @@
       return el("li", { class: "ending-cell" + (open ? " ending-cell--open" : " ending-cell--locked") }, [
         el("span", { class: "ending-cell__emoji", "aria-hidden": "true", text: e.emoji }),
         el("span", { class: "ending-cell__title", text: open ? e.title : "???" }),
-        el("span", { class: "ending-cell__text", text: open ? e.verdict : "ещё не открыт" })
+        el("span", { class: "ending-cell__text", text: open ? e.verdict : "так ты ещё не уходил" })
       ]);
     });
     const s = el("div", {}, [
@@ -189,6 +196,12 @@
     show(s, "endings");
   }
 
+  // «🔋 −10 · ✨ +10» — стартовые модификаторы роли, чтобы шкалы были понятны до первой встречи
+  function modsLine(role) {
+    return E.STATS.filter(k => role.mods && role.mods[k])
+      .map(k => DATA.stats[k].emoji + " " + fmtDelta(role.mods[k])).join(" · ");
+  }
+
   function renderRole() {
     const cards = DATA.roles.map(r => el("button", {
       class: "card card--role", type: "button",
@@ -197,11 +210,12 @@
       el("span", { class: "card__emoji", "aria-hidden": "true", text: r.emoji }),
       el("span", { class: "card__body" }, [
         el("span", { class: "card__name", text: r.name }),
-        el("span", { class: "card__tag", text: "«" + r.tagline + "»" })
+        el("span", { class: "card__tag", text: "«" + r.tagline + "»" }),
+        modsLine(r) ? el("span", { class: "card__mods", text: modsLine(r) }) : null
       ])
     ]));
     const s = el("div", {}, [
-      el("p", { class: "eyebrow", text: "шаг 1 из 2" }),
+      el("p", { class: "eyebrow", text: "регистрация · кто ты" }),
       el("h2", { class: "title", text: "Кто ты сегодня?" }),
       el("div", { class: "cards cards--roles" }, cards)
     ]);
@@ -222,10 +236,10 @@
     ]));
     const role = DATA.roles.find(r => r.id === app.roleId);
     const s = el("div", {}, [
-      el("p", { class: "eyebrow", text: "шаг 2 из 2 · " + (role ? role.emoji + " " + role.name : "") }),
+      el("p", { class: "eyebrow", text: "регистрация · " + (role ? role.emoji + " " + role.name + " · " : "") + "куда" }),
       el("h2", { class: "title", text: "Куда идём?" }),
       el("div", { class: "cards" }, cards),
-      button("Случайный", () => pick(events[Math.floor(Math.random() * events.length)].id), "btn--secondary"),
+      button("Куда позвали", () => pick(events[Math.floor(Math.random() * events.length)].id), "btn--secondary"),
       button("← Другая роль", () => renderRole(), "btn--ghost")
     ]);
     show(s, "event");
@@ -239,7 +253,8 @@
       el("h2", { class: "title", text: ev.title }),
       el("p", { class: "intro__sub", text: ev.subtitle }),
       el("p", { class: "intro__text", text: ev.intro }),
-      button("Зайти", () => renderEncounter(), "btn--primary btn--big")
+      el("p", { class: "intro__legend muted small", text: E.STATS.map(k => DATA.stats[k].emoji + " " + DATA.stats[k].label.toLowerCase()).join(" · ") + ". Все три ты не удержишь." }),
+      button("Сдать куртку и зайти", () => renderEncounter(), "btn--primary btn--big")
     ]);
     show(s, "intro");
   }
@@ -250,19 +265,24 @@
       el("article", { class: "badge" + (shake ? " badge--shake" : "") }, [
         el("div", { class: "badge__clip", "aria-hidden": "true" }),
         el("div", { class: "badge__hello", text: "ПРИВЕТ, Я" }),
-        el("div", { class: "badge__emoji", "aria-hidden": "true", text: npc.emoji || "" }),
-        el("h2", { class: "badge__name", text: npc.name }),
+        el("h2", { class: "badge__name" }, [
+          npc.emoji ? el("span", { class: "badge__emoji", "aria-hidden": "true", text: npc.emoji }) : null,
+          el("span", { class: "badge__name-text", text: npc.name })
+        ]),
         el("p", { class: "badge__title", text: npc.title })
       ])
     ]);
   }
 
-  // n — номер показываемой встречи (на экране исхода index уже сдвинут, поэтому передаём явно)
-  function hud(game, values, n) {
+  // n — номер показываемой встречи (на экране исхода index уже сдвинут, поэтому передаём явно), time — «21:40»
+  function hud(game, values, n, time) {
+    const total = game.queue.length;
+    const step = Math.min(n, total);
     return el("header", { class: "hud" }, [
       statsPanel(values),
-      el("div", { class: "hud__row" }, [
-        el("span", { class: "counter", text: "встреча " + Math.min(n, game.queue.length) + "/" + game.queue.length }),
+      el("div", { class: "hud__side" }, [
+        el("span", { class: "clock", "aria-label": "время", text: time }),
+        el("span", { class: "counter", "aria-label": "встреча " + step + " из " + total, text: step + " из " + total }),
         game.done ? null : button("Уйти по-английски", () => { E.leaveEnglish(game); renderEnding(); }, "btn--tiny")
       ])
     ]);
@@ -278,7 +298,7 @@
       renderOutcome(enc);
     }, "btn--option"));
     const s = el("div", {}, [
-      hud(g, g, g.index + 1),
+      hud(g, g, g.index + 1, E.clock(g)),
       badge(enc.npc, false),
       el("p", { class: "situation", text: enc.text }),
       el("div", { class: "options", role: "group", "aria-label": "Варианты ответа" }, options)
@@ -302,18 +322,18 @@
       deltaNodes.push(el("span", { class: good ? "delta delta--good" : "delta delta--bad", text: DATA.stats[k].emoji + " " + fmtDelta(d) }));
     });
 
-    const panel = hud(g, o.before, g.log.length);
+    const panel = hud(g, o.before, o.step || g.log.length, o.time || E.clock(g, g.log.length - 1));
+    // пустой контакт — «контакт» в кавычках: понятно задним числом, без спойлера
+    const contactLabel = o.contact ? (o.contact.kind === "real" ? "+ контакт: " : "+ «контакт»: ") + o.contact.name +
+      (o.contact.note ? " (" + o.contact.note + ")" : "") : "";
     const s = el("div", {}, [
       panel,
       badge(enc.npc, cringeUp),
-      el("p", { class: "situation situation--dim", text: enc.text }),
-      el("p", { class: "chosen", text: "— " + o.optionText }),
+      el("p", { class: "chosen", title: enc.text, text: "— " + o.optionText }),
       el("div", { class: "outcome" }, [
         el("p", { class: "outcome__text", text: o.result }),
         deltaNodes.length ? el("p", { class: "outcome__deltas" }, deltaNodes) : null,
-        o.contact ? el("div", { class: "contact-badge" }, [
-          el("span", { text: "+ контакт: " + o.contact.name + (o.contact.note ? " (" + o.contact.note + ")" : "") })
-        ]) : null,
+        o.contact ? el("div", { class: "contact-badge" }, [el("span", { text: contactLabel })]) : null,
         button("Дальше", () => renderEncounter(), "btn--primary")
       ])
     ]);
@@ -322,7 +342,7 @@
   }
 
   function contactsList(contacts) {
-    if (!contacts.length) return el("p", { class: "muted", text: "Список контактов пуст. Телефон — тоже." });
+    if (!contacts.length) return el("p", { class: "muted", text: "Список контактов пуст. Как и до ивента." });
     return el("ul", { class: "contacts" }, contacts.map(c => el("li", { class: "contact contact--" + c.kind }, [
       el("span", { class: "contact__mark", "aria-label": c.kind === "real" ? "напишет" : "не напишет", text: c.kind === "real" ? "✅" : "💤" }),
       el("span", { class: "contact__name", text: c.name }),
@@ -368,8 +388,8 @@
       button("Скопировать текст", () => copyText(text), "btn--secondary"),
       navigator.share ? button("Поделиться", () => nativeShare(text, canvas, ending), "btn--secondary") : null,
       el("a", { class: "btn btn--secondary", href: tgUrl, target: "_blank", rel: "noopener", text: "В Telegram" }),
-      button("Ещё раз", () => renderEvent(), "btn--primary"),
-      button("Все финалы", () => renderEndings(renderEnding), "btn--ghost"),
+      button("Ещё один ивент", () => renderEvent(), "btn--primary"),
+      button(allEndingsLabel(progress), () => renderEndings(renderEnding), "btn--ghost"),
       button("С начала", () => { app.roleId = null; app.eventId = null; renderStart(); }, "btn--ghost")
     ]);
 
@@ -382,9 +402,9 @@
       statsPanel(g),
       el("p", { class: "contacts-line", text: DATA.contactsLine(g.contacts.length, real) }),
       contactsList(g.contacts),
-      ach.all.length ? el("h3", { class: "subhead", text: "Ачивки" }) : null,
+      ach.all.length ? el("h3", { class: "subhead", text: "Что ты натворил" }) : null,
       achievementsList(ach.all),
-      el("p", { class: "muted small", text: "Вечер №" + progress.runs + " · " + collectedLine(progress) }),
+      el("p", { class: "muted small", text: "Вечер №" + progress.runs + " · " + g.role.emoji + " " + g.role.name + (E.timeSpan(g) ? " · " + E.timeSpan(g) : "") }),
       el("div", { class: "share-preview" }, [canvas]),
       actions
     ]);
@@ -394,7 +414,7 @@
   // ---------- Шеринг ----------
 
   function copyText(text) {
-    const done = () => toast("Скопировано");
+    const done = () => toast("Скопировано. Теперь отправь");
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(done, () => legacyCopy(text) && done());
     } else if (legacyCopy(text)) done();

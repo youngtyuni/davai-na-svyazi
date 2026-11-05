@@ -146,6 +146,16 @@
       y = drawBar(ctx, y, data.stats.cringe.emoji, data.stats.cringe.label, state.cringe, C.pink) + 44;
       y = drawBar(ctx, y, data.stats.clout.emoji, data.stats.clout.label, state.clout, C.blue) + 52;
 
+      // время вечера «19:00 → 01:30» — мелко, только если ивент задаёт time
+      const span = E && E.timeSpan ? E.timeSpan(state) : "";
+      if (span) {
+        ctx.textAlign = "center";
+        ctx.fillStyle = C.grey;
+        ctx.font = "500 26px " + BODY;
+        ctx.fillText(span, W / 2, y - 14);
+        y += 30;
+      }
+
       // контакты
       const real = state.contacts.filter(c => c.kind === "real").length;
       ctx.textAlign = "center";

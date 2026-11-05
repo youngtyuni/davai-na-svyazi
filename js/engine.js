@@ -43,26 +43,36 @@
 
   // ---------- Выборка встреч ----------
 
-  // Собирает очередь встреч на забег: до 2 ролевых + универсальные, final — последней
+  // anchor-встреча ивента: первая по порядку в файле с anchor: true (остальные anchor — обычные встречи)
+  function findAnchor(event) {
+    return (event.encounters || []).find(e => e.anchor && !e.chained) || null;
+  }
+
+  // Собирает очередь встреч на забег:
+  // [anchor] + обычные (до 2 ролевых + универсальные, случайно) + phase:"late" (случайно) + final
+  // anchor универсальна: ролевые ограничения на неё не действуют
   function pickEncounters(event, roleId, rng) {
     rng = rng || Math.random;
     const picks = event.picks || 8;
     const pool = (event.encounters || []).filter(e => !e.chained);
+    const anchor = findAnchor(event);
+    const rest = anchor ? pool.filter(e => e !== anchor) : pool;
+    const limit = Math.max(0, picks - (anchor ? 1 : 0));
 
-    const forRole = pool.filter(e => Array.isArray(e.roles) && e.roles.includes(roleId));
-    const universal = pool.filter(e => !Array.isArray(e.roles) || e.roles.length === 0);
+    const forRole = rest.filter(e => Array.isArray(e.roles) && e.roles.includes(roleId));
+    const universal = rest.filter(e => !Array.isArray(e.roles) || e.roles.length === 0);
 
     let selected = shuffle(forRole, rng).slice(0, 2);
-    const need = Math.max(0, picks - selected.length);
+    const need = Math.max(0, limit - selected.length);
     selected = selected.concat(shuffle(universal, rng).slice(0, need));
 
     // гарантируем одну финальную встречу, если она есть в ивенте
     if (!selected.some(e => e.final)) {
-      const candidates = pool.filter(e => e.final && !selected.includes(e) &&
+      const candidates = rest.filter(e => e.final && !selected.includes(e) &&
         (!Array.isArray(e.roles) || e.roles.includes(roleId)));
       if (candidates.length) {
         const fin = candidates[Math.floor(rng() * candidates.length)];
-        if (selected.length >= picks) {
+        if (selected.length >= limit && selected.length) {
           // заменяем последнюю неролевую встречу, чтобы не раздувать забег
           let idx = -1;
           for (let i = selected.length - 1; i >= 0; i--) {
@@ -76,8 +86,51 @@
     }
 
     const finals = selected.filter(e => e.final);
-    const regular = shuffle(selected.filter(e => !e.final), rng);
-    return regular.concat(finals);
+    const body = selected.filter(e => !e.final);
+    const early = shuffle(body.filter(e => e.phase !== "late"), rng);
+    const late = shuffle(body.filter(e => e.phase === "late"), rng);
+    return (anchor ? [anchor] : []).concat(early, late, finals);
+  }
+
+  // ---------- Время вечера ----------
+
+  const DEFAULT_TIME = ["19:00", "01:00"];
+  const HM_RE = /^([01]?\d|2[0-3]):([0-5]\d)$/;
+
+  function parseHM(str) {
+    const m = HM_RE.exec(String(str || "").trim());
+    return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+  }
+
+  function fmtHM(minutes) {
+    const m = ((Math.round(minutes) % 1440) + 1440) % 1440;
+    const h = Math.floor(m / 60), mm = m % 60;
+    return (h < 10 ? "0" : "") + h + ":" + (mm < 10 ? "0" : "") + mm;
+  }
+
+  // [начало, конец] ивента как строки HH:MM; невалидное поле → значения по умолчанию
+  function eventTime(event) {
+    const t = event && Array.isArray(event.time) ? event.time : null;
+    if (t && t.length === 2 && parseHM(t[0]) !== null && parseHM(t[1]) !== null) return [t[0], t[1]];
+    return DEFAULT_TIME.slice();
+  }
+
+  // Время встречи index (0-based) из total: линейная интерполяция от начала к концу,
+  // с переходом через полночь, с округлением до 5 минут. Последняя встреча — ровно конец
+  function clockAt(time, index, total) {
+    const start = parseHM(time[0]), end0 = parseHM(time[1]);
+    const end = end0 < start ? end0 + 1440 : end0;
+    if (!(total > 1)) return fmtHM(start);
+    const i = clamp(index, 0, total - 1);
+    if (i === total - 1) return fmtHM(end);
+    const span = end - start;
+    return fmtHM(Math.round((start + span * i / (total - 1)) / 5) * 5);
+  }
+
+  // Текущее время в забеге: по номеру встречи в очереди (по умолчанию — текущая)
+  function clock(state, index) {
+    const i = index === undefined ? state.index : index;
+    return clockAt(state.time || eventTime(state.event), i, state.queue.length);
   }
 
   // ---------- Состояние ----------
@@ -100,6 +153,7 @@
       flags: {},
       log: [],
       queue: pickEncounters(event, role.id, rng),
+      time: eventTime(event),
       index: 0,
       current: null,
       outcome: null,
@@ -152,6 +206,8 @@
 
     const outcome = {
       encounterId: enc.id,
+      step: state.index + 1,
+      time: clock(state, state.index),
       npc: enc.npc,
       optionText: opt.text,
       result: opt.result,
@@ -274,6 +330,15 @@
     return "А ты кто" + (where ? " " + where : "") + "?";
   }
 
+  // «19:00 → 01:30»: от начала ивента до последней сыгранной встречи. Только если ивент задаёт time
+  function timeSpan(state) {
+    if (!state.event || !Array.isArray(state.event.time)) return "";
+    const t = state.time || eventTime(state.event);
+    const last = state.log.length ? state.log[state.log.length - 1] : null;
+    const end = (last && last.time) || t[0];
+    return t[0] + " → " + end;
+  }
+
   function shareText(state, ending, url) {
     const data = state._data;
     const real = state.contacts.filter(c => c.kind === "real").length;
@@ -284,7 +349,11 @@
       ending.verdict,
       bar(state.energy, "🟩", "⬛") + " 🔋 " + data.stats.energy.label,
       bar(state.cringe, "🟥", "⬛") + " 😬 " + data.stats.cringe.label,
-      bar(state.clout, "🟨", "⬛") + " ✨ " + data.stats.clout.label,
+      bar(state.clout, "🟨", "⬛") + " ✨ " + data.stats.clout.label
+    );
+    const span = timeSpan(state);
+    if (span) lines.push(span);
+    lines.push(
       data.contactsLine(state.contacts.length, real),
       "",
       challengeLine(state) + (url ? " → " + url : "")
@@ -294,9 +363,10 @@
 
   const Engine = {
     mulberry32, makeRng, shuffle, clamp, STATS,
-    pickEncounters, createGame, choose, leaveEnglish, finish,
+    pickEncounters, findAnchor, createGame, choose, leaveEnglish, finish,
     resolveEnding, resolveAchievements, shareText, bar, buildCtx,
-    runEmoji, stepEmoji, challengeLine
+    runEmoji, stepEmoji, challengeLine,
+    DEFAULT_TIME, parseHM, fmtHM, eventTime, clockAt, clock, timeSpan
   };
 
   if (typeof module !== "undefined" && module.exports) module.exports = Engine;

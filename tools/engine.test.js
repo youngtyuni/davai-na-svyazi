@@ -47,25 +47,32 @@ EVENTS.forEach(ev => {
   const pool = ev.encounters.filter(e => !e.chained);
   ROLES.forEach(role => {
     test(`${ev.id} × ${role.id}`, () => {
+      const anchor = E.findAnchor(ev);
+      const rest = pool.filter(e => e !== anchor);
       for (let seed = 1; seed <= 20; seed++) {
         const q = E.pickEncounters(ev, role.id, E.makeRng(seed));
         const picks = ev.picks || 8;
-        const forRole = pool.filter(e => Array.isArray(e.roles) && e.roles.includes(role.id));
-        const universal = pool.filter(e => !Array.isArray(e.roles) || !e.roles.length);
-        const possible = Math.min(picks, Math.min(2, forRole.length) + universal.length);
+        const forRole = rest.filter(e => Array.isArray(e.roles) && e.roles.includes(role.id));
+        const universal = rest.filter(e => !Array.isArray(e.roles) || !e.roles.length);
+        const possible = Math.min(picks, (anchor ? 1 : 0) + Math.min(2, forRole.length) + universal.length);
         assert.strictEqual(q.length, possible, `seed ${seed}: длина ${q.length}, ожидалось ${possible}`);
         const ids = q.map(e => e.id);
         assert.strictEqual(new Set(ids).size, ids.length, `seed ${seed}: дубли ${ids}`);
         assert.ok(!q.some(e => e.chained), `seed ${seed}: chained в первичной выборке`);
+        if (anchor) assert.strictEqual(q[0], anchor, `seed ${seed}: anchor не первая`);
         q.forEach(e => {
-          if (Array.isArray(e.roles)) assert.ok(e.roles.includes(role.id), `seed ${seed}: чужая ролевая ${e.id} (${e.roles})`);
+          if (e !== anchor && Array.isArray(e.roles)) assert.ok(e.roles.includes(role.id), `seed ${seed}: чужая ролевая ${e.id} (${e.roles})`);
         });
-        const finals = q.filter(e => e.final);
-        if (pool.some(e => e.final && (!e.roles || e.roles.includes(role.id)))) {
+        const finals = q.filter(e => e.final && e !== anchor);
+        if (rest.some(e => e.final && (!e.roles || e.roles.includes(role.id)))) {
           assert.strictEqual(finals.length, 1, `seed ${seed}: финальных ${finals.length}`);
           assert.ok(q[q.length - 1].final, `seed ${seed}: final не последняя`);
         }
-        const roleInQ = q.filter(e => Array.isArray(e.roles)).length;
+        // late — сплошным блоком после всех не-late (кроме final)
+        const bodyPhases = q.filter(e => e !== anchor && !e.final).map(e => e.phase === "late");
+        const firstLate = bodyPhases.indexOf(true);
+        if (firstLate >= 0) assert.ok(bodyPhases.slice(firstLate).every(Boolean), `seed ${seed}: late раньше обычных`);
+        const roleInQ = q.filter(e => e !== anchor && Array.isArray(e.roles)).length;
         assert.strictEqual(roleInQ, Math.min(2, forRole.length), `seed ${seed}: ролевых ${roleInQ}, есть ${forRole.length}`);
       }
     });
@@ -112,6 +119,125 @@ test("ролевой final для роли игрока попадает пос�
     const q2 = E.pickEncounters(ev, "designer", E.makeRng(s));
     assert.ok(!q2.some(e => e.id === "rf"));
   }
+});
+
+// ---------- 1b. anchor / phase / time ----------
+section("anchor, phase: late, время вечера");
+function arcEvent(over) {
+  const encs = [];
+  for (let i = 0; i < 6; i++) encs.push({ id: "u" + i, npc: {}, text: "", options: [] });
+  for (let i = 0; i < 4; i++) encs.push({ id: "l" + i, phase: "late", npc: {}, text: "", options: [] });
+  encs.push({ id: "r1", roles: ["cd"], phase: "late", npc: {}, text: "", options: [] });
+  encs.push({ id: "fin", final: true, npc: {}, text: "", options: [] });
+  encs.splice(3, 0, { id: "anc", anchor: true, roles: ["musician"], npc: { name: "Анкер" }, text: "", options: [] });
+  return Object.assign({ id: "arc", picks: 8, encounters: encs }, over || {});
+}
+test("anchor всегда в выборке и всегда первая, роли на неё не действуют", () => {
+  const ev = arcEvent();
+  ROLES.forEach(r => {
+    for (let s = 1; s <= 15; s++) {
+      const q = E.pickEncounters(ev, r.id, E.makeRng(s));
+      assert.strictEqual(q.length, 8, `${r.id}/${s}: длина ${q.length}`);
+      assert.strictEqual(q[0].id, "anc", `${r.id}/${s}: первая ${q[0].id}`);
+      assert.strictEqual(q.filter(e => e.id === "anc").length, 1);
+      assert.strictEqual(q[7].id, "fin");
+    }
+  });
+});
+test("несколько anchor → первая по порядку в файле, остальные как обычные", () => {
+  const ev = arcEvent();
+  ev.encounters.push({ id: "anc2", anchor: true, npc: {}, text: "", options: [] });
+  let seenSecond = false;
+  for (let s = 1; s <= 40; s++) {
+    const q = E.pickEncounters(ev, "designer", E.makeRng(s));
+    assert.strictEqual(q[0].id, "anc");
+    const i = q.findIndex(e => e.id === "anc2");
+    if (i > 0) seenSecond = true;
+  }
+  assert.ok(seenSecond, "второй anchor ни разу не попал как обычная встреча");
+  assert.strictEqual(E.findAnchor(ev).id, "anc");
+  assert.strictEqual(E.findAnchor({ encounters: [{ id: "x", anchor: true, chained: true }] }), null, "chained anchor игнорируется");
+});
+test("late — после всех не-late и перед final; внутри фазы порядок меняется", () => {
+  const ev = arcEvent();
+  const lateOrders = new Set(), earlyOrders = new Set();
+  for (let s = 1; s <= 30; s++) {
+    const q = E.pickEncounters(ev, "cd", E.makeRng(s));
+    const body = q.slice(1, -1);
+    const isLate = body.map(e => e.phase === "late");
+    const first = isLate.indexOf(true);
+    assert.ok(first > 0, `seed ${s}: нет обычных перед late`);
+    assert.ok(isLate.slice(first).every(Boolean), `seed ${s}: late вперемешку: ${q.map(e => e.id)}`);
+    assert.ok(q[q.length - 1].final);
+    assert.ok(body.some(e => e.id === "r1"), "ролевая late не выбрана");
+    lateOrders.add(body.filter(e => e.phase === "late").map(e => e.id).join(","));
+    earlyOrders.add(body.filter(e => e.phase !== "late").map(e => e.id).join(","));
+  }
+  assert.ok(lateOrders.size > 1 && earlyOrders.size > 1, "порядок внутри фаз не случайный");
+});
+test("без anchor/phase/time движок работает как раньше", () => {
+  const ev = { id: "plain", picks: 4, encounters: [0, 1, 2, 3, 4].map(i => ({ id: "p" + i, npc: {}, text: "", options: [{ text: "x", result: "y" }] })) };
+  const g = E.createGame(data, { events: [ev] }, { seed: 3, roleId: "designer", eventId: "plain" });
+  assert.strictEqual(g.queue.length, 4);
+  assert.deepStrictEqual(g.time, E.DEFAULT_TIME);
+  assert.strictEqual(E.clock(g), "19:00");
+  while (!g.done) E.choose(g, 0);
+  assert.deepStrictEqual(g.log.map(l => l.time), ["19:00", "21:00", "23:00", "01:00"]);
+  assert.deepStrictEqual(g.log.map(l => l.step), [1, 2, 3, 4]);
+  assert.strictEqual(E.timeSpan(g), "", "без event.time строки времени в шере нет");
+  assert.strictEqual(E.shareText(g, g.ending).split("\n").length, 9);
+});
+test("время: интерполяция, переход через полночь, монотонно растёт, последняя = конец", () => {
+  assert.strictEqual(E.clockAt(["19:00", "01:30"], 0, 8), "19:00");
+  assert.strictEqual(E.clockAt(["19:00", "01:30"], 7, 8), "01:30");
+  assert.strictEqual(E.clockAt(["23:30", "00:10"], 1, 3), "23:50");
+  assert.strictEqual(E.clockAt(["19:00", "01:30"], 0, 1), "19:00");
+  assert.strictEqual(E.clockAt(["19:00", "01:30"], 99, 8), "01:30", "индекс за пределами — клампится");
+  const ev = arcEvent({ time: ["19:00", "01:30"] });
+  ev.encounters.forEach(e => { e.options = [{ text: "x", result: "y" }]; });
+  const g = E.createGame(data, { events: [ev] }, { seed: 5, roleId: "cd", eventId: "arc" });
+  assert.deepStrictEqual(g.time, ["19:00", "01:30"]);
+  const toMin = t => { const p = E.parseHM(t); return p < E.parseHM("19:00") ? p + 1440 : p; };
+  let prev = -1;
+  while (!g.done) {
+    const t = E.clock(g);
+    assert.strictEqual(t, E.clock(g, g.index));
+    assert.ok(toMin(t) > prev, `время не растёт: ${t} после ${prev}`);
+    prev = toMin(t);
+    E.choose(g, 0);
+  }
+  assert.strictEqual(g.log[0].time, "19:00");
+  assert.strictEqual(g.log[g.log.length - 1].time, "01:30");
+  assert.strictEqual(E.timeSpan(g), "19:00 → 01:30");
+  const txt = E.shareText(g, g.ending, "https://x/");
+  assert.strictEqual(txt.split("\n").length, 10);
+  assert.ok(txt.includes("\n19:00 → 01:30\n"));
+  // ранний выход: конец — время последней сыгранной встречи
+  const g2 = E.createGame(data, { events: [ev] }, { seed: 5, roleId: "cd", eventId: "arc" });
+  E.choose(g2, 0); E.choose(g2, 0); E.leaveEnglish(g2);
+  assert.strictEqual(E.timeSpan(g2), "19:00 → " + g2.log[1].time);
+  assert.notStrictEqual(g2.log[1].time, "01:30");
+});
+test("невалидный time → значения по умолчанию", () => {
+  assert.deepStrictEqual(E.eventTime({ time: ["25:00", "01:00"] }), E.DEFAULT_TIME);
+  assert.deepStrictEqual(E.eventTime({ time: "19:00" }), E.DEFAULT_TIME);
+  assert.deepStrictEqual(E.eventTime({}), E.DEFAULT_TIME);
+  assert.deepStrictEqual(E.eventTime({ time: ["7:05", "9:00"] }), ["7:05", "9:00"]);
+  assert.strictEqual(E.clockAt(["7:05", "9:00"], 0, 2), "07:05");
+});
+test("цепочка next удлиняет очередь — время остаётся монотонным", () => {
+  const encs = [
+    { id: "a", npc: {}, text: "", options: [{ text: "x", result: "y", next: "a2" }] },
+    { id: "a2", chained: true, npc: {}, text: "", options: [{ text: "x", result: "y" }] },
+    { id: "b", npc: {}, text: "", options: [{ text: "x", result: "y" }] },
+    { id: "c", npc: {}, text: "", options: [{ text: "x", result: "y" }] }
+  ];
+  const ev = { id: "ch", picks: 3, time: ["20:00", "23:00"], encounters: encs };
+  const g = E.createGame(data, { events: [ev] }, { seed: 1, roleId: "designer", eventId: "ch" });
+  while (!g.done) E.choose(g, 0);
+  const mins = g.log.map(l => E.parseHM(l.time));
+  for (let i = 1; i < mins.length; i++) assert.ok(mins[i] >= mins[i - 1], "время убывает: " + g.log.map(l => l.time));
+  assert.strictEqual(g.log[g.log.length - 1].time, "23:00");
 });
 
 // ---------- 2. Цепочки next ----------
@@ -305,10 +431,13 @@ test("shareText содержит все строки и URL", () => {
   assert.ok(t.includes(E.challengeLine(g)));
   assert.ok(t.endsWith(" → " + url));
   const lines = t.split("\n");
-  assert.strictEqual(lines.length, 9);
+  const span = E.timeSpan(g);
+  assert.strictEqual(lines.length, span ? 10 : 9);
+  if (span) assert.strictEqual(lines[6], span, "строка времени — сразу под шкалами");
   assert.strictEqual(lines[1], E.runEmoji(g));
   const t2 = E.shareText(g, g.ending);
-  assert.ok(!t2.includes("→") && t2.endsWith("?"));
+  const last2 = t2.split("\n").pop();
+  assert.ok(!last2.includes("→") && last2.endsWith("?"), "без url вызов без стрелки: " + last2);
 });
 test("bar: 10 клеток, корректное округление", () => {
   assert.strictEqual(E.bar(0, "x", "."), "..........");

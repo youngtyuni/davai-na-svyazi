@@ -14,6 +14,7 @@ const DESIGN_FLAGS = [
 const LIMITS = { text: 280, optionText: 90, result: 220, npcTitle: 70 };
 const DELTA_MIN = -40, DELTA_MAX = 40;
 const STATS = ["energy", "cringe", "clout"];
+const HM_RE = /^([01]?\d|2[0-3]):[0-5]\d$/;
 
 const { data, content, files, eventFiles } = loadAll({ prod: PROD });
 const FLAGS = new Set(DESIGN_FLAGS.concat(data.achievements.map(a => a.flag)));
@@ -40,6 +41,14 @@ content.events.forEach(ev => {
   const localIds = new Set(encs.map(e => e.id));
   const referencedByNext = new Set();
 
+  // time: массив из двух строк HH:MM
+  if (ev.time !== undefined) {
+    const ok = Array.isArray(ev.time) && ev.time.length === 2 && ev.time.every(t => typeof t === "string" && HM_RE.test(t));
+    if (!ok) err(evWhere, `time должен быть массивом из двух строк «HH:MM», сейчас ${JSON.stringify(ev.time)}`);
+  }
+  const anchors = encs.filter(e => e.anchor);
+  if (anchors.length > 1) err(evWhere, `anchor: true у ${anchors.length} встреч (${anchors.map(e => e.id).join(", ")}), допустима одна`);
+
   encs.forEach(e => {
     totalEnc++;
     const where = `[${file} → ${ev.id} → ${e.id || "(без id)"}]`;
@@ -52,6 +61,10 @@ content.events.forEach(ev => {
     if (e.npc && len(e.npc.title) > LIMITS.npcTitle) err(where, `npc.title длиннее ${LIMITS.npcTitle} (${len(e.npc.title)})`);
     if (!e.text) err(where, "нет text");
     if (len(e.text) > LIMITS.text) err(where, `text длиннее ${LIMITS.text} (${len(e.text)})`);
+    if (e.anchor !== undefined && typeof e.anchor !== "boolean") err(where, "anchor должен быть true/false");
+    if (e.anchor && e.chained) err(where, "anchor не может быть chained (не попадёт в выборку)");
+    if (e.anchor && e.final) err(where, "anchor не может быть final (anchor — первая встреча)");
+    if (e.phase !== undefined && e.phase !== "late") err(where, `phase может быть только "late", сейчас «${e.phase}»`);
     if (e.roles !== undefined) {
       if (!Array.isArray(e.roles) || !e.roles.length) err(where, "roles должен быть непустым массивом");
       else e.roles.forEach(r => { if (!data.roles.some(x => x.id === r)) err(where, `неизвестная роль «${r}»`); });
@@ -87,7 +100,7 @@ content.events.forEach(ev => {
   // структурные проверки ивента
   const pool = encs.filter(e => !e.chained);
   if (!pool.some(e => e.final)) err(evWhere, "нет ни одной встречи с final: true");
-  const universal = pool.filter(e => !e.roles).length;
+  const universal = pool.filter(e => !e.roles || e.anchor).length; // anchor универсальна
   if (universal < picks) {
     const msg = `универсальных встреч ${universal}, нужно ≥ picks (${picks})`;
     if (file.startsWith("_")) warn(evWhere, msg); else err(evWhere, msg);
