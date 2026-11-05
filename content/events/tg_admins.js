@@ -40,7 +40,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Давай. Ставлю завтра в прайм, ты тоже?»",
           result: "Она сказала «конечно» и записала тебя в заметки. Между «купить хлеб» и «ВП с кем-то ещё».",
-          energy: -5, cringe: 5, clout: 5, flags: ["said_davai"],
+          energy: -5, cringe: 5, clout: 5, flags: ["said_davai", "free_work"],
           contact: { name: "Даша", title: "тёплая аудитория", kind: "empty", note: "ВП завтра в прайм" },
           next: "tg_admins_vp_2"
         },
@@ -52,7 +52,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Я ВП не делаю. Только за деньги»",
           result: "Она сказала «понимаю» и вышла из разговора так же, как выходят из канала: тихо и без уведомления.",
-          energy: -5, cringe: 10, clout: 10
+          energy: -10, cringe: 10, clout: 15
         }
       ]
     },
@@ -109,7 +109,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Красивая кардиограмма»",
           result: "Она не поняла, что это шутка, и сказала «спасибо». Потом поняла. Потом сказала, что у тебя график — прямая, а это хуже.",
-          energy: -5, cringe: 10, clout: 5
+          energy: -10, cringe: 10, clout: 5
         },
         {
           text: "«А где закупалась?»",
@@ -142,7 +142,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Давай, скидывай креатив»",
           result: "Креатив пришёл: «Друзья, я редко рекомендую, но…». Ты редко рекомендуешь шестой раз за месяц. Аудитория заметила раньше тебя.",
-          energy: -5, cringe: 15, clout: -5, flags: ["said_davai"],
+          energy: -10, cringe: 15, clout: -5, flags: ["said_davai"],
           contact: { name: "Игорь", title: "байер, «без erid»", kind: "empty", note: "ждёт отчёт по 1/24" }
         }
       ]
@@ -189,7 +189,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Устал. Выгорел. Не знаю, зачем это всё»",
           result: "Она оживилась: «Напиши об этом пост! Выгорание сейчас заходит». У неё таких постов три, каждый — лучший по охвату.",
-          energy: -10, cringe: 10, clout: 10, flags: ["burnout", "complained"]
+          energy: -10, cringe: 10, clout: 15, flags: ["burnout", "complained"]
         }
       ]
     },
@@ -211,7 +211,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "Ответить голосовым на 8 минут",
           result: "Ты наговорил про охваты, прайм-тайм и смысл жизни. Он не слушал: уже монтировал кружок. Твой «инсайт» вышел у него через час. Подпись: «один админ».",
-          energy: -15, cringe: 10, clout: 10, flags: ["pitched"]
+          energy: -15, cringe: 10, clout: 15, flags: ["pitched"]
         }
       ]
     },
@@ -228,7 +228,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Подпишись на мой, там про жизнь»",
           result: "Он подписался при тебе. 2 741. Через час, собирая бокалы, отписался. Ты видел. Он видел, что ты видел.",
-          energy: -5, cringe: 10, clout: -5, flags: ["pitched"]
+          energy: -10, cringe: 10, clout: -5, flags: ["pitched"]
         },
         {
           text: "Сказать «спасибо» и просто выпить",
@@ -246,7 +246,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Давай ВП?»",
           result: "Она вздохнула: «Ну давай». У вас обоих по 2К, по 300 просмотров и по одному боту. ВП прошёл честно. Пришло ноль.",
-          energy: -5, cringe: 10, clout: 0, flags: ["said_davai"],
+          energy: -5, cringe: 10, clout: 0, flags: ["said_davai", "free_work"],
           contact: { name: "Соня", title: "2,1К, не про деньги", kind: "empty", note: "ВП, пришло ноль" }
         },
         {
@@ -258,7 +258,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "Сделать вид, что помнишь её: «А, ты та, которая…»",
           result: "Она ждала продолжения. Ты не знал продолжения. «…которая про иллюстрацию!» Про иллюстрацию в чате шестьдесят человек.",
-          energy: -5, cringe: 15, clout: 0, flags: ["forgot_name"]
+          energy: -10, cringe: 15, clout: 0, flags: ["forgot_name"]
         }
       ]
     },
@@ -276,12 +276,12 @@ window.GAME_CONTENT.events.push({
         {
           text: "Написать: «всем привет, кто хочет ВП — в личку»",
           result: "Написали восемь. У всех «тёплая». У всех 180 просмотров. Ты сделал ВП со всеми. Пришло 12 человек. Четверо — из этого же чата.",
-          energy: -10, cringe: 10, clout: 10, flags: ["said_davai", "pitched"]
+          energy: -10, cringe: 10, clout: 15, flags: ["said_davai", "pitched"]
         },
         {
           text: "Молча поставить реакцию на рекламу",
           result: "Это была единственная реакция под рекламой. Автор курса написал тебе лично: «Спасибо, что поддерживаешь. Скидка 10%».",
-          energy: -5, cringe: 10, clout: 0,
+          energy: -10, cringe: 10, clout: 0,
           contact: { name: "Автор курса", title: "по закупам", kind: "empty", note: "скидка 10%" }
         }
       ]

@@ -29,7 +29,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "Уточнить, он ведь из того сетевого, которое с пчелой",
           result: "Не с пчелой. И не из сетевого. Он его основал. Пауза заняла всё горячее.",
-          energy: -5, cringe: 15, clout: -10
+          energy: -10, cringe: 15, clout: -10
         }
       ]
     },
@@ -41,7 +41,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "Промолчать и очень внимательно резать стейк",
           result: "Молчание было заметно. Стейк — тоже: он оказался рыбой.",
-          energy: -5, cringe: 10, next: "cd_dinner_jury_2"
+          energy: -10, cringe: 10, next: "cd_dinner_jury_2"
         },
         {
           text: "«Это был наш кейс. Кадры — подрядчика»",
@@ -64,7 +64,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Это и есть охват»",
           result: "Стол засмеялся. Один записал фразу. Через месяц она была в его кейсе — как метрика.",
-          cringe: 10, clout: 10
+          cringe: 10, clout: 15
         },
         {
           text: "«Мы вернём металл сами. Как честные»",
@@ -123,7 +123,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«А семья — это по ТК или по любви?»",
           result: "Тишина. Алиса рассмеялась первой: «По любви, конечно». Доступы отключают тоже по любви.",
-          energy: -5, cringe: 10, clout: 10, flags: ["complained"]
+          energy: -10, cringe: 10, clout: 15, flags: ["complained"]
         }
       ]
     },
@@ -145,7 +145,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Я сам CD. Двенадцать лет»",
           result: "«Отлично, тогда стажировка менторская. Для меня. Бесплатно». Ты согласился — это звучало как комплимент.",
-          energy: -5, cringe: 5, clout: -5, flags: ["lied"]
+          energy: -5, cringe: 5, clout: -5, flags: ["lied", "pitched"]
         }
       ]
     },
@@ -180,7 +180,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«О чём? Мы не знакомы»",
           result: "Знакомы. Она прислала вилку в пятницу, ты ответил «интересно». Человек через стол читает по губам.",
-          energy: -5, cringe: 10, clout: -5, flags: ["lied"]
+          energy: -10, cringe: 10, clout: -5, flags: ["lied"]
         },
         {
           text: "«Подумал. Давай созвонимся на неделе»",
@@ -204,7 +204,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Шекспир был сторителлером. Ты — копирайтер»",
           result: "Тишина. Потом смех — слишком громкий. Даниэль тоже засмеялся. Утром фраза была в его канале. Как его.",
-          energy: -5, cringe: 5, clout: 15, flags: ["honest"]
+          energy: -5, cringe: 5, clout: 20, flags: ["honest"]
         },
         {
           text: "Кивнуть и записать вместе со всеми",
@@ -214,7 +214,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«А сторителлер — это сколько в месяц?»",
           result: "«Это не про деньги». Через два блюда он спросил, сколько платят тебе. Про деньги оказалось — про тебя.",
-          energy: -5, cringe: 10, clout: -5, flags: ["ask_budget"]
+          energy: -10, cringe: 10, clout: -5, flags: ["ask_budget"]
         }
       ]
     },
@@ -226,7 +226,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Мой хот-тейк — игнорировать все хот-тейки»",
           result: "Аплодисменты. Кто-то сказал «это надо в пост». Утром фраза вышла у троих, и один уже продавал её как воркшоп.",
-          energy: 0, cringe: -5, clout: 15, flags: ["ai_talk"]
+          energy: 0, cringe: -5, clout: 20, flags: ["ai_talk"]
         },
         {
           text: "«Я выгорел. Нейросети ни при чём»",
@@ -236,7 +236,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "Сделать вид, что звонит телефон",
           result: "На экране — «КЛИЕНТ (не брать)». Клиент сидит через два стула и видит экран. И видит, что ты не берёшь.",
-          energy: -5, cringe: 10, clout: -5, flags: ["phone_hide"]
+          energy: -10, cringe: 10, clout: -5, flags: ["phone_hide"]
         }
       ]
     },
@@ -259,7 +259,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Двойной. И чаевые — наличными»",
           result: "Ты дал чаевые новому CCO. Он взял. Сказал, что это первый честный гонорар в индустрии за год.",
-          energy: -5, cringe: 15, clout: 10, flags: ["prosecco"]
+          energy: -10, cringe: 15, clout: 15, flags: ["prosecco"]
         }
       ]
     },
@@ -365,7 +365,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "Накрыть папку рукой: «Я закрою»",
           result: "Ты закрыл. Стол выпил за тебя. В понедельник трое написали «давай на связи». Один из них — хедхантер.",
-          energy: -10, cringe: 0, clout: 15,
+          energy: -10, cringe: 0, clout: 20,
           contact: { name: "Весь стол", title: "двенадцать CD", kind: "empty", note: "«скинемся переводом»" }
         },
         {

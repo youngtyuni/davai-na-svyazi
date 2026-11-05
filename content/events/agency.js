@@ -22,14 +22,15 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Креатив. Это мы делали четыре месяца»",
           result: "«Ну да, вместе». Она посмотрела на часы. На часах было ровно столько времени, сколько она на тебя выделила: ноль.",
-          energy: -5, cringe: 5, clout: 10, flags: ["honest"],
+          energy: -5, cringe: 5, clout: 15, flags: ["honest"],
           contact: { name: "Вероника", title: "бренд-менеджер", kind: "empty", note: "«коллеги, созвонимся»" }
         },
         {
           text: "«А давайте выйдем в TikTok?»",
           result: "Она просияла: «Вот! Я то же самое им говорю!» Теперь ты её человек. Через восемь месяцев она сменит работу, и новый бренд-менеджер отменит и тебя.",
-          energy: -5, clout: 10,
-          contact: { name: "Вероника", title: "бренд-менеджер, пока", kind: "empty", note: "«у нас теперь другой вектор»" }
+          energy: -5, clout: 15,
+          contact: { name: "Вероника", title: "бренд-менеджер, пока", kind: "empty", note: "«у нас теперь другой вектор»" },
+          flags: ["pitched"]
         }
       ]
     },
@@ -65,7 +66,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«А сколько стоил этот треугольник?»",
           result: "Он замолчал. Потом честно: «Три недели стратегического отдела и ужин с клиентом». Салфетку сложил вчетверо и убрал во внутренний карман. Как смету.",
-          energy: -5, cringe: 10, clout: 5, flags: ["ask_budget"]
+          energy: -10, cringe: 10, clout: 5, flags: ["ask_budget"]
         },
         {
           text: "Честно: «Я не понимаю, что такое tension»",
@@ -88,12 +89,12 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Мы тоже участвовали»",
           result: "Тебя приняли в круг. Выяснилось: не выиграл никто, тендер отменили «в связи со сменой приоритетов». Ты скорбел по концепции, которой у тебя не было. Искренне.",
-          energy: -5, cringe: 5, clout: 10, flags: ["lied"], next: "agency_tender_2"
+          energy: -5, cringe: 5, clout: 15, flags: ["lied"], next: "agency_tender_2"
         },
         {
           text: "«Я не участвую в бесплатных тендерах»",
           result: "Трое посмотрели на тебя как на человека с другой планеты, где платят. Один тихо спросил: «А как?» Ты не знал. Но контакт он записал.",
-          energy: -5, cringe: 10, clout: -5, flags: ["honest"],
+          energy: -10, cringe: 10, clout: -5, flags: ["honest"],
           contact: { name: "Кто-то из кружка", title: "агентство, проиграло", kind: "empty", note: "«расскажешь, как»" }
         },
         {
@@ -118,7 +119,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Уточнённое ТЗ — это из наших концепций?»",
           result: "«Из лучших практик рынка». Она улыбнулась так, что стало ясно: название вашей концепции из ТЗ тоже уберут. На следующей неделе. После претензии.",
-          energy: -5, cringe: 5, clout: 10, flags: ["complained"]
+          energy: -5, cringe: 5, clout: 15, flags: ["complained"]
         },
         {
           text: "«А можно за кейс?»",
@@ -140,12 +141,12 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Воздух и шрифт побольше — это в разные стороны»",
           result: "Он посмотрел на тебя долго. «Вы на нас работаете, а не на воздух». Рядом аккаунт Лёша беззвучно умер и воскрес.",
-          energy: -5, cringe: 10, clout: 10, flags: ["honest"]
+          energy: -5, cringe: 10, clout: 15, flags: ["honest"]
         },
         {
           text: "Рассмеяться: это же шутка про Apple",
           result: "Он не шутил. Он смотрел, как ты смеёшься, и ждал. Ты досмеялся один. Шрифт всё равно сделают побольше.",
-          energy: -5, cringe: 20, clout: -5, flags: ["fake_laugh"]
+          energy: -10, cringe: 20, clout: -5, flags: ["fake_laugh"]
         }
       ]
     },
@@ -157,7 +158,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Поздравляю, невероятные цифры»",
           result: "Она сказала «спасибо, что понимаете». Парень из команды поднял глаза и посмотрел на тебя как на соучастника. Это 1,2 миллиона. Теперь ты тоже знаешь. И тоже молчишь.",
-          energy: -5, cringe: 5, clout: 10,
+          energy: -5, cringe: 5, clout: 15,
           contact: { name: "Алина", title: "PR бренда", kind: "empty", note: "«пришлю кейс»" }
         },
         {
@@ -187,7 +188,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Это тот бутик, который делает всё за кейс?»",
           result: "«За кейс и упоминание», поправил он без обиды. Добавил, что бесплатных тендеров они не делают — только бесплатные проекты. Разницу он объяснял восемь минут.",
-          energy: -5, cringe: 10, clout: 5, flags: ["honest"]
+          energy: -10, cringe: 10, clout: 5, flags: ["honest"]
         },
         {
           text: "«Я выгорел. Ничего не ищу»",
@@ -204,7 +205,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "«Честно? Логотип съел всё. Клиент опять победил»",
           result: "Он перевернул бейдж: «Chief Marketing Officer, первые 90 дней». Кивнул: «Согласен. Это согласовал предыдущий». У тебя появился клиент. И враг. Это один человек.",
-          energy: -5, cringe: 15, clout: 10, flags: ["complained"],
+          energy: -10, cringe: 15, clout: 15, flags: ["complained"],
           contact: { name: "CMO «Импульса»", title: "первые 90 дней", kind: "empty", note: "«это согласовал предыдущий»" }
         },
         {
@@ -238,7 +239,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "Запитчить в ответ свой кейс",
           result: "Ты рассказал про проект. Он ждал, пока ты договоришь, как ждут лифт. «Было. У нас, в 2016». Твой кейс стал его кейсом. Задним числом.",
-          energy: -5, cringe: 10, clout: 5, flags: ["pitched"]
+          energy: -10, cringe: 10, clout: 5, flags: ["pitched"]
         }
       ]
     },
@@ -345,7 +346,7 @@ window.GAME_CONTENT.events.push({
         {
           text: "Взять худи и идти на афтепати",
           result: "Худи оказалось размера S с логотипом размера XL. На афтепати платило агентство. Ты узнал это из чека, который Лёша положил на стол, как кейс.",
-          energy: -15, cringe: 5, clout: 10, flags: ["prosecco"]
+          energy: -15, cringe: 5, clout: 15, flags: ["prosecco"]
         },
         {
           text: "Взять два худи и уйти по-тихому",

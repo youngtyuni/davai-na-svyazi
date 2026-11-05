@@ -140,7 +140,7 @@ window.GAME_CONTENT.events.push({
           result: "«Семьдесят пять». Пауза. «Пока». Он всё равно записал твою телегу и добавил в чат «Ранние амбассадоры». В чате четыреста человек и один стикер.",
           energy: -5, cringe: 5, clout: 5,
           contact: { name: "Тимур", title: "founder, в стадии упаковки", kind: "empty", note: "чат «Ранние амбассадоры»" },
-          flags: ["ask_budget"]
+          flags: ["ask_budget", "free_work"]
         },
         {
           text: "«Давай на связи, скину презу»",
@@ -200,7 +200,7 @@ window.GAME_CONTENT.events.push({
           result: "Ты не скинул. Он написал «визионер (цифры уточняются)». Пост вышел. Тебя тегнули. Ты теперь визионер с пометкой «уточняется».",
           energy: -5, cringe: 10, clout: 10,
           contact: { name: "Артём", title: "медиапартнёр", kind: "empty", note: "«цифры уточняются»" },
-          flags: ["ghosted"]
+          flags: ["ghosted", "free_work"]
         }
       ]
     },
