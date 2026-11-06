@@ -137,7 +137,7 @@
   // ---------- Экраны ----------
 
   function collectedLine(progress) {
-    return "Собрано финалов: " + progress.endings.length + "/" + DATA.endings.length;
+    return "Финалов: " + progress.endings.length + " из " + DATA.endings.length;
   }
 
   function allEndingsLabel(progress) {
@@ -148,7 +148,7 @@
   const STICKERS = ["«скинь презу»", "«созвонимся»", "«за опыт»", "«мы семья»", "«давай ВП»", "«это пойдёт в кейс»", "«бюджета нет»", "«а что хотел сказать автор»", "«ты же дизайнер»", "«в силе?»"];
   const HERO_NPCS = [
     { name: "никто", title: "ex-всё, founder, в поиске себя", emoji: "🫥" },
-    { name: "Кирилл", title: "Founder, visionary, экосистема", emoji: "🧢" },
+    { name: "Ярик", title: "Founder, visionary, экосистема", emoji: "🧢" },
     { name: "Полина", title: "Куратор, «работаю с памятью»", emoji: "🥂" },
     { name: "Марк", title: "Промоутер. Гонорары на неделе", emoji: "🎧" },
     { name: "Лёша", title: "Вышел из найма. Три месяца", emoji: "✈️" },
@@ -162,7 +162,7 @@
       el("div", { class: "hero" }, [
         el("h1", { class: "hero__title", text: "ДАВАЙ НА СВЯЗИ" }),
         el("p", { class: "hero__sub", text: "симулятор нетворкинга в креативных индустриях" }),
-        el("p", { class: "hero__desc", text: "Одна вечеринка. Восемь человек с длинными титулами. Три шкалы, которые ты не удержишь." })
+        el("p", { class: "hero__desc", text: "Одна вечеринка. Восемь человек с длинными титулами. Три шкалы, все в минус." })
       ]),
       el("div", { class: "hero__badge" }, [
         el("span", { class: "sticker sticker--lime", text: pick(STICKERS) }),
@@ -240,7 +240,7 @@
       el("h2", { class: "title", text: "Куда идём?" }),
       el("div", { class: "cards" }, cards),
       button("Куда позвали", () => pick(events[Math.floor(Math.random() * events.length)].id), "btn--secondary"),
-      button("← Другая роль", () => renderRole(), "btn--ghost")
+      button("← Переписать бейдж", () => renderRole(), "btn--ghost")
     ]);
     show(s, "event");
   }
@@ -342,7 +342,7 @@
   }
 
   function contactsList(contacts) {
-    if (!contacts.length) return el("p", { class: "muted", text: "Список контактов пуст. Как и до ивента." });
+    if (!contacts.length) return el("p", { class: "muted", text: "В телефоне те же люди, что и утром." });
     return el("ul", { class: "contacts" }, contacts.map(c => el("li", { class: "contact contact--" + c.kind }, [
       el("span", { class: "contact__mark", "aria-label": c.kind === "real" ? "напишет" : "не напишет", text: c.kind === "real" ? "✅" : "💤" }),
       el("span", { class: "contact__name", text: c.name }),
@@ -382,15 +382,15 @@
     }).catch(err => { console.error(err); return null; });
 
     const actions = el("div", { class: "actions" }, [
-      button("Скачать картинку", () => {
+      button("Сохранить сторис", () => {
         app.shareReady.then(() => window.Share.downloadCard(canvas, "davai-na-svyazi-" + ending.id + ".png"));
       }, "btn--primary"),
-      button("Скопировать текст", () => copyText(text), "btn--secondary"),
+      button("Скопировать для чата", () => copyText(text), "btn--secondary"),
       navigator.share ? button("Поделиться", () => nativeShare(text, canvas, ending), "btn--secondary") : null,
       el("a", { class: "btn btn--secondary", href: tgUrl, target: "_blank", rel: "noopener", text: "В Telegram" }),
       button("Ещё один ивент", () => renderEvent(), "btn--primary"),
       button(allEndingsLabel(progress), () => renderEndings(renderEnding), "btn--ghost"),
-      button("С начала", () => { app.roleId = null; app.eventId = null; renderStart(); }, "btn--ghost")
+      button("Сменить бейдж", () => { app.roleId = null; app.eventId = null; renderStart(); }, "btn--ghost")
     ]);
 
     const s = el("div", {}, [
@@ -414,7 +414,7 @@
   // ---------- Шеринг ----------
 
   function copyText(text) {
-    const done = () => toast("Скопировано. Теперь отправь");
+    const done = () => toast("Скопировано. Скинь коллеге.");
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(done, () => legacyCopy(text) && done());
     } else if (legacyCopy(text)) done();
