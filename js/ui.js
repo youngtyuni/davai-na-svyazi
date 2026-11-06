@@ -274,9 +274,10 @@
     ]);
   }
 
-  // n — номер показываемой встречи (на экране исхода index уже сдвинут, поэтому передаём явно), time — «21:40»
-  function hud(game, values, n, time) {
-    const total = game.queue.length;
+  // n — номер показываемой встречи (на экране исхода index уже сдвинут, поэтому передаём явно), time — «21:40»,
+  // total — длина очереди на момент встречи (цепочка может удлинить её сразу после выбора)
+  function hud(game, values, n, time, total) {
+    total = total || game.queue.length;
     const step = Math.min(n, total);
     return el("header", { class: "hud" }, [
       statsPanel(values),
@@ -322,7 +323,7 @@
       deltaNodes.push(el("span", { class: good ? "delta delta--good" : "delta delta--bad", text: DATA.stats[k].emoji + " " + fmtDelta(d) }));
     });
 
-    const panel = hud(g, o.before, o.step || g.log.length, o.time || E.clock(g, g.log.length - 1));
+    const panel = hud(g, o.before, o.step || g.log.length, o.time || E.clock(g, g.log.length - 1), o.total);
     // пустой контакт — «контакт» в кавычках: понятно задним числом, без спойлера
     const contactLabel = o.contact ? (o.contact.kind === "real" ? "+ контакт: " : "+ «контакт»: ") + o.contact.name +
       (o.contact.note ? " (" + o.contact.note + ")" : "") : "";

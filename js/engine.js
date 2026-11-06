@@ -207,6 +207,7 @@
     const outcome = {
       encounterId: enc.id,
       step: state.index + 1,
+      total: state.queue.length, // до вставки цепочки — HUD исхода должен совпадать с HUD встречи
       time: clock(state, state.index),
       npc: enc.npc,
       optionText: opt.text,

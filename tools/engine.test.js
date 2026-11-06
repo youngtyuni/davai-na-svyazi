@@ -291,6 +291,21 @@ test("next на уже показанную встречу не показыва
   assert.strictEqual(new Set(ids).size, ids.length, "дубли: " + ids);
   assert.strictEqual(ids.length, 3);
 });
+test("outcome.total — длина очереди до вставки цепочки (HUD исхода = HUD встречи)", () => {
+  const encs = [
+    { id: "a", npc: {}, text: "", options: [{ text: "x", result: "y", next: "b" }] },
+    { id: "b", chained: true, npc: {}, text: "", options: [{ text: "x", result: "y" }] },
+    { id: "c", npc: {}, text: "", options: [{ text: "x", result: "y" }] }
+  ];
+  const ev = { id: "x", picks: 2, encounters: encs };
+  const g = E.createGame(data, { events: [ev] }, { seed: 1, roleId: "designer", eventId: "x" });
+  assert.strictEqual(g.queue.length, 2);
+  while (g.current.id !== "a") E.choose(g, 0);
+  const o = E.choose(g, 0);
+  assert.strictEqual(o.total, 2, "total зафиксирован до вставки цепочки");
+  assert.strictEqual(g.queue.length, 3, "очередь выросла после вставки");
+  assert.strictEqual(o.step, g.index, "step — номер сыгранной встречи");
+});
 test("next на несуществующую встречу — забег продолжается", () => {
   const encs = [
     { id: "a", npc: {}, text: "", options: [{ text: "x", result: "y", next: "zzz" }] },
