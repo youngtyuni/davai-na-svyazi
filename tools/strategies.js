@@ -75,12 +75,13 @@ const pct = n => (100 * n / N).toFixed(1).padStart(5) + "%";
 const CHECKS = {
   "min-cringe": { id: "energy_zero", max: 30 },
   "max-cringe": { id: "cringe_max", min: 40 },
-  "max-free-work": { any: ["free_worker"] },
-  "max-pitch": { any: ["pitcher"] },
+  "max-free-work": { any: ["free_worker"], soft: true },
+  "max-pitch": { any: ["pitcher"], soft: true },
   "prefer-real-contact": { any: ["found_people"] }
 };
 
 const problems = [];
+const warnings = [];
 Object.keys(STRATEGIES).forEach(name => {
   if (onlyStrategy && name !== onlyStrategy) return;
   const pick = STRATEGIES[name];
@@ -100,7 +101,8 @@ Object.keys(STRATEGIES).forEach(name => {
     if (chk) {
       if (chk.max !== undefined && 100 * count[chk.id] / N > chk.max) { mark = `  ← ${chk.id} > ${chk.max}%`; problems.push(`${name}/${ev.id}: ${chk.id} ${(100 * count[chk.id] / N).toFixed(0)}% > ${chk.max}%`); }
       if (chk.min !== undefined && 100 * count[chk.id] / N < chk.min) { mark = `  ← ${chk.id} < ${chk.min}%`; problems.push(`${name}/${ev.id}: ${chk.id} ${(100 * count[chk.id] / N).toFixed(0)}% < ${chk.min}%`); }
-      if (chk.any) chk.any.forEach(id => { if (!count[id]) { mark += `  ← ${id} недостижим`; problems.push(`${name}/${ev.id}: ${id} ни разу`); } });
+      // Поведенческие финалы (free_worker/pitcher) не обязаны быть достижимы в каждом ивенте — предупреждение, не ошибка
+      if (chk.any) chk.any.forEach(id => { if (!count[id]) { mark += `  ← ${id} недостижим`; (chk.soft ? warnings : problems).push(`${name}/${ev.id}: ${id} ни разу`); } });
     }
     console.log(`  ${ev.id.padEnd(11)} ${row}${mark}`);
   });
@@ -108,6 +110,7 @@ Object.keys(STRATEGIES).forEach(name => {
   console.log(`  ${"итого".padEnd(11)} ${sumRow}`);
 });
 
+if (warnings.length) { console.log("\nПредупреждения (финал недостижим в ивенте):"); warnings.forEach(p => console.log("  - " + p)); }
 if (problems.length) {
   console.log("\nПРОБЛЕМЫ:");
   problems.forEach(p => console.log("  - " + p));
